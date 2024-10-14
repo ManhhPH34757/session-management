@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Login from './components/Login';
-import Users from './components/User'; // Đảm bảo đúng đường dẫn
+import Users from './components/User';
 import MyProfile from './components/MyProfile';
 import Navbar from './components/Navbar';
 import { setAuthDetails, checkRefreshTokenStatus, handleLogout } from './api';
@@ -38,7 +38,7 @@ const AppWrapper: React.FC<{ isAuthenticated: boolean; setIsAuthenticated: React
     if (token) {
       const decoded: any = jwtDecode(token);
       userId = decoded.userId;
-      isAdmin = decoded.role === 'admin'; // Kiểm tra quyền admin từ token
+      isAdmin = decoded.role === 'admin'; 
 
       const interval = setInterval(async () => {
         if (userId) {
@@ -48,9 +48,9 @@ const AppWrapper: React.FC<{ isAuthenticated: boolean; setIsAuthenticated: React
             window.location.reload();
           }
         }
-      }, 1000); // Kiểm tra mỗi 1 giây
+      }, 1000); 
 
-      return () => clearInterval(interval); // Xóa interval khi component unmount
+      return () => clearInterval(interval);
     }
   }, [navigate, setIsAuthenticated, token]);
 
