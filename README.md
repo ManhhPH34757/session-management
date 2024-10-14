@@ -1,4 +1,4 @@
-#Database
+# Database
 ### MariaDB
 ### CREATE DATABASE sessionManagement;
 # Back-end
