@@ -40,6 +40,7 @@ const Users: React.FC = () => {
         },
       });
       setUsers(response.data);
+      setTimeout(fetchUsers, 500);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -70,6 +71,21 @@ const Users: React.FC = () => {
     }
   };
 
+  const configLougout = async (id: number) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      await api.put(`/auth/user/config/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
+      fetchUsers();
+    } catch (error) {
+      console.log("Error configs");
+    }
+  }
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -98,6 +114,7 @@ const Users: React.FC = () => {
               <td>{user.role}</td>
               <td>
                 <button className="btn btn-outline-danger" onClick={() => forceLogout(user.id)}>Force Logout</button>
+                <button className="ms-2 btn btn-outline-warning" onClick={() => configLougout(user.id)}>Config</button>
               </td>
             </tr>
           ))}

@@ -198,5 +198,27 @@ router.put('/users/:id', authenticateToken, upload.single('avatar'), async (req,
     }
 });
 
+router.put('/user/config/:id', authenticateToken, authorizeAdmin, async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findOne({ where: { id: id }});
+
+    if (!user?.refresh_token) {
+        return res.status(403).json({ message: 'User not login' });
+    }
+
+    jwt.verify(user.refresh_token, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+        if (err) {
+            console.error('Refresh token expired or invalid', err);
+            return res.sendStatus(403);
+        }
+
+        const newRefreshToken = jwt.sign({ userId: user.id, role: user.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '2h' });
+        user.refresh_token = newRefreshToken;
+        await user.save();
+        res.json({ message: 'Configs successfully' });
+    });
+
+})
+
 
 module.exports = router;
